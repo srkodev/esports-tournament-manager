@@ -31,7 +31,7 @@ const tournoiSchema = z.object({
   Date_fin: z.string(),
   Lieu: z.string().min(2, "Le lieu doit contenir au moins 2 caractères"),
   Image_affiche: z.string().url("URL invalide").or(z.literal("")),
-  ID_equipe_vainqueur: z.string().or(z.literal(""))
+  ID_equipe_vainqueur: z.string().or(z.literal("null"))
 }).refine(data => {
   const dateDebut = new Date(data.Date_debut);
   const dateFin = new Date(data.Date_fin);
@@ -52,7 +52,7 @@ const TournoiForm = ({ onSuccess, tournoiToEdit, equipes, onCancel }: TournoiFor
     Date_fin: tournoiToEdit?.Date_fin || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
     Lieu: tournoiToEdit?.Lieu || "",
     Image_affiche: tournoiToEdit?.Image_affiche || "",
-    ID_equipe_vainqueur: tournoiToEdit?.ID_equipe_vainqueur?.toString() || ""
+    ID_equipe_vainqueur: tournoiToEdit?.ID_equipe_vainqueur?.toString() || "null"
   };
   
   const form = useForm<TournoiFormValues>({
@@ -70,7 +70,7 @@ const TournoiForm = ({ onSuccess, tournoiToEdit, equipes, onCancel }: TournoiFor
         Date_fin: data.Date_fin,
         Lieu: data.Lieu,
         Image_affiche: data.Image_affiche,
-        ID_equipe_vainqueur: data.ID_equipe_vainqueur ? parseInt(data.ID_equipe_vainqueur) : null
+        ID_equipe_vainqueur: data.ID_equipe_vainqueur === "null" ? null : parseInt(data.ID_equipe_vainqueur)
       };
       
       if (tournoiToEdit) {
@@ -187,7 +187,7 @@ const TournoiForm = ({ onSuccess, tournoiToEdit, equipes, onCancel }: TournoiFor
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="">Aucun vainqueur</SelectItem>
+                  <SelectItem value="null">Aucun vainqueur</SelectItem>
                   {equipes.map((equipe) => (
                     <SelectItem key={equipe.ID_equipe} value={equipe.ID_equipe.toString()}>
                       {equipe.Nom}

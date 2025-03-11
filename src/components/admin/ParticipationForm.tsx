@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Equipe, Tournoi, addParticipation, getEquipes, getTournois } from "@/services/api";
+import { addParticipation, getEquipes, getTournois } from "@/services/api";
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
