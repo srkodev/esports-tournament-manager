@@ -18,8 +18,12 @@ class Database {
             );
             $this->conn->exec("set names utf8");
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         } catch(PDOException $exception) {
-            echo "Erreur de connexion : " . $exception->getMessage();
+            http_response_code(500);
+            echo json_encode(array("message" => "Erreur de connexion à la base de données: " . $exception->getMessage()));
+            die();
         }
 
         return $this->conn;
