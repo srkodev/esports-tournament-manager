@@ -2,20 +2,31 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Equipe, Tournoi, addParticipation } from "@/services/api";
+import { Equipe, Tournoi, addParticipation, getEquipes, getTournois } from "@/services/api";
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
 interface ParticipationFormProps {
-  equipes: Equipe[];
-  tournois: Tournoi[];
   onSuccess: () => void;
+  onCancel?: () => void;
 }
 
-const ParticipationForm = ({ equipes, tournois, onSuccess }: ParticipationFormProps) => {
+const ParticipationForm = ({ onSuccess, onCancel }: ParticipationFormProps) => {
   const [equipeId, setEquipeId] = useState<string>("");
   const [tournoiId, setTournoiId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Fetch equipes and tournois data
+  const { data: equipes = [] } = useQuery({
+    queryKey: ["equipes"],
+    queryFn: getEquipes,
+  });
+
+  const { data: tournois = [] } = useQuery({
+    queryKey: ["tournois"],
+    queryFn: getTournois,
+  });
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,10 +99,17 @@ const ParticipationForm = ({ equipes, tournois, onSuccess }: ParticipationFormPr
         </Select>
       </div>
       
-      <Button type="submit" disabled={isLoading} className="w-full">
-        {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        Ajouter la participation
-      </Button>
+      <div className="flex gap-2 justify-end">
+        {onCancel && (
+          <Button type="button" variant="outline" onClick={onCancel}>
+            Annuler
+          </Button>
+        )}
+        <Button type="submit" disabled={isLoading}>
+          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          Ajouter la participation
+        </Button>
+      </div>
     </form>
   );
 };
