@@ -20,20 +20,36 @@ const AdminPage = () => {
   const [showParticipationForm, setShowParticipationForm] = useState(false);
 
   // Récupération des données
-  const { data: equipes, isLoading: isLoadingEquipes } = useQuery({
+  const { data: equipes, isLoading: isLoadingEquipes, refetch: refetchEquipes } = useQuery({
     queryKey: ["equipes"],
     queryFn: getEquipes,
   });
 
-  const { data: tournois, isLoading: isLoadingTournois } = useQuery({
+  const { data: tournois, isLoading: isLoadingTournois, refetch: refetchTournois } = useQuery({
     queryKey: ["tournois"],
     queryFn: getTournois,
   });
 
-  const { data: participations, isLoading: isLoadingParticipations } = useQuery({
+  const { data: participations, isLoading: isLoadingParticipations, refetch: refetchParticipations } = useQuery({
     queryKey: ["participations"],
     queryFn: () => getParticipations(),
   });
+
+  // Fonctions de succès pour rafraîchir les données
+  const onEquipeSuccess = () => {
+    setShowEquipeForm(false);
+    refetchEquipes();
+  };
+
+  const onTournoiSuccess = () => {
+    setShowTournoiForm(false);
+    refetchTournois();
+  };
+
+  const onParticipationSuccess = () => {
+    setShowParticipationForm(false);
+    refetchParticipations();
+  };
 
   // Filtrage des résultats basé sur la recherche
   const filteredEquipes = equipes?.filter(equipe => 
@@ -92,7 +108,10 @@ const AdminPage = () => {
                 <CardContent>
                   {showEquipeForm && (
                     <>
-                      <EquipeForm onCancel={() => setShowEquipeForm(false)} />
+                      <EquipeForm 
+                        onSuccess={onEquipeSuccess} 
+                        onCancel={() => setShowEquipeForm(false)} 
+                      />
                       <Separator className="my-6" />
                     </>
                   )}
@@ -157,7 +176,11 @@ const AdminPage = () => {
                 <CardContent>
                   {showTournoiForm && (
                     <>
-                      <TournoiForm onCancel={() => setShowTournoiForm(false)} />
+                      <TournoiForm 
+                        onSuccess={onTournoiSuccess} 
+                        onCancel={() => setShowTournoiForm(false)}
+                        equipes={equipes || []}
+                      />
                       <Separator className="my-6" />
                     </>
                   )}
@@ -211,7 +234,10 @@ const AdminPage = () => {
                 <CardContent>
                   {showParticipationForm && (
                     <>
-                      <ParticipationForm onCancel={() => setShowParticipationForm(false)} />
+                      <ParticipationForm 
+                        onSuccess={onParticipationSuccess}
+                        onCancel={() => setShowParticipationForm(false)}
+                      />
                       <Separator className="my-6" />
                     </>
                   )}

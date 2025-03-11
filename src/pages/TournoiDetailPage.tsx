@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, ChevronLeft, Globe, Loader2, MapPin, Trophy, Users } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { NotFound } from "./NotFound";
+import NotFound from "./NotFound"; // Fixed import statement
 
 const TournoiDetailPage = () => {
   const { id } = useParams<{ id: string }>();

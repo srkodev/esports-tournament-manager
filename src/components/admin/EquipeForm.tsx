@@ -20,6 +20,7 @@ import { Loader2 } from "lucide-react";
 interface EquipeFormProps {
   onSuccess: () => void;
   equipeToEdit?: Equipe;
+  onCancel?: () => void; // Make this optional to match how it's used in AdminPage
 }
 
 const equipeSchema = z.object({
@@ -33,7 +34,7 @@ const equipeSchema = z.object({
 
 type EquipeFormValues = z.infer<typeof equipeSchema>;
 
-const EquipeForm = ({ onSuccess, equipeToEdit }: EquipeFormProps) => {
+const EquipeForm = ({ onSuccess, equipeToEdit, onCancel }: EquipeFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   
   const defaultValues: Partial<EquipeFormValues> = {
@@ -57,7 +58,15 @@ const EquipeForm = ({ onSuccess, equipeToEdit }: EquipeFormProps) => {
       if (equipeToEdit) {
         await updateEquipe(equipeToEdit.ID_equipe, data);
       } else {
-        await createEquipe(data);
+        // Ensure all required fields are present
+        await createEquipe({
+          Nom: data.Nom,
+          Pays: data.Pays,
+          Jeux_principaux: data.Jeux_principaux,
+          Date_creation: data.Date_creation,
+          Logo: data.Logo,
+          Site_web: data.Site_web
+        });
       }
       
       onSuccess();
@@ -164,10 +173,17 @@ const EquipeForm = ({ onSuccess, equipeToEdit }: EquipeFormProps) => {
           )}
         />
         
-        <Button type="submit" disabled={isLoading} className="w-full">
-          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {equipeToEdit ? "Mettre à jour" : "Créer l'équipe"}
-        </Button>
+        <div className="flex gap-2 justify-end">
+          {onCancel && (
+            <Button type="button" variant="outline" onClick={onCancel}>
+              Annuler
+            </Button>
+          )}
+          <Button type="submit" disabled={isLoading}>
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {equipeToEdit ? "Mettre à jour" : "Créer l'équipe"}
+          </Button>
+        </div>
       </form>
     </Form>
   );

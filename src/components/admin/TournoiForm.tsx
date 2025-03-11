@@ -22,6 +22,7 @@ interface TournoiFormProps {
   onSuccess: () => void;
   tournoiToEdit?: Tournoi;
   equipes: Equipe[];
+  onCancel?: () => void; // Added to match AdminPage usage
 }
 
 const tournoiSchema = z.object({
@@ -42,7 +43,7 @@ const tournoiSchema = z.object({
 
 type TournoiFormValues = z.infer<typeof tournoiSchema>;
 
-const TournoiForm = ({ onSuccess, tournoiToEdit, equipes }: TournoiFormProps) => {
+const TournoiForm = ({ onSuccess, tournoiToEdit, equipes, onCancel }: TournoiFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   
   const defaultValues: Partial<TournoiFormValues> = {
@@ -64,7 +65,11 @@ const TournoiForm = ({ onSuccess, tournoiToEdit, equipes }: TournoiFormProps) =>
     
     try {
       const formattedData = {
-        ...data,
+        Nom_tournoi: data.Nom_tournoi,
+        Date_debut: data.Date_debut,
+        Date_fin: data.Date_fin,
+        Lieu: data.Lieu,
+        Image_affiche: data.Image_affiche,
         ID_equipe_vainqueur: data.ID_equipe_vainqueur ? parseInt(data.ID_equipe_vainqueur) : null
       };
       
@@ -195,10 +200,17 @@ const TournoiForm = ({ onSuccess, tournoiToEdit, equipes }: TournoiFormProps) =>
           )}
         />
         
-        <Button type="submit" disabled={isLoading} className="w-full">
-          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {tournoiToEdit ? "Mettre à jour" : "Créer le tournoi"}
-        </Button>
+        <div className="flex gap-2 justify-end">
+          {onCancel && (
+            <Button type="button" variant="outline" onClick={onCancel}>
+              Annuler
+            </Button>
+          )}
+          <Button type="submit" disabled={isLoading}>
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {tournoiToEdit ? "Mettre à jour" : "Créer le tournoi"}
+          </Button>
+        </div>
       </form>
     </Form>
   );
