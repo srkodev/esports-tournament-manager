@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Github, Twitter, Linkedin, Mail, MapPin } from "lucide-react";
 
@@ -6,7 +7,7 @@ const Footer = () => {
     <footer className="border-t border-border bg-background py-12 mt-auto">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="space-y-4">
+          <div className="space-y-4 flex flex-col items-center text-center">
             <h3 className="text-lg font-bold">BOOSTGG</h3>
             <p className="text-sm text-muted-foreground">
               La solution complète pour gérer vos tournois esport et suivre les performances des équipes.
@@ -55,7 +56,7 @@ const Footer = () => {
             </ul>
           </div>
           
-          <div className="space-y-4">
+          <div className="space-y-4 flex flex-col items-center text-center">
             <h3 className="text-lg font-bold">Contact</h3>
             <ul className="space-y-2">
               <li className="flex items-center space-x-2">
