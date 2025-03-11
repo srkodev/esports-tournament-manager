@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { Github, Twitter, Linkedin, Mail, MapPin, Phone } from "lucide-react";
+import { Github, Twitter, Linkedin, Mail, MapPin } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -13,13 +13,13 @@ const Footer = () => {
               La solution complète pour gérer vos tournois esport et suivre les performances des équipes.
             </p>
             <div className="flex space-x-4 pt-2">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+              <a href="https://github.com/srkodev" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                 <Github className="h-5 w-5" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+              <a href="https://x.com/srko_dj" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                 <Twitter className="h-5 w-5" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+              <a href="https://www.linkedin.com/in/jules-crevoisier/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                 <Linkedin className="h-5 w-5" />
               </a>
             </div>
@@ -61,15 +61,11 @@ const Footer = () => {
             <ul className="space-y-2">
               <li className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">contact@boostgg.com</span>
-              </li>
-              <li className="flex items-center space-x-2">
-                <Phone className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">+33 1 23 45 67 89</span>
+                <span className="text-sm text-muted-foreground">contact@vosoft.fr</span>
               </li>
               <li className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">123 Rue de l'Esport, 75001 Paris</span>
+                <span className="text-sm text-muted-foreground">9 Rue Quebec, 10430 Rosières-prés-Troyes</span>
               </li>
             </ul>
           </div>
