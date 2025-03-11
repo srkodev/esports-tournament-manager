@@ -1,10 +1,13 @@
-
+# Activer le module de réécriture
 RewriteEngine On
+
+# Si la requête ne correspond pas à un répertoire ou à un fichier existant,
+# rediriger en ajoutant l’extension .php
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)$ $1.php [L]
 
-# Headers pour CORS
+# En-têtes pour CORS
 Header set Access-Control-Allow-Origin "*"
 Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
 Header set Access-Control-Allow-Headers "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
