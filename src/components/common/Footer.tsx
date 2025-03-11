@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { Github, Twitter, Linkedin } from "lucide-react";
+import { Github, Twitter, Linkedin, Mail, MapPin, Phone } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -8,14 +8,25 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="space-y-4">
-            <h3 className="text-lg font-bold">EsportManager</h3>
+            <h3 className="text-lg font-bold">BOOSTGG</h3>
             <p className="text-sm text-muted-foreground">
               La solution complète pour gérer vos tournois esport et suivre les performances des équipes.
             </p>
+            <div className="flex space-x-4 pt-2">
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                <Github className="h-5 w-5" />
+              </a>
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                <Twitter className="h-5 w-5" />
+              </a>
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                <Linkedin className="h-5 w-5" />
+              </a>
+            </div>
           </div>
           
           <div className="space-y-4">
-            <h3 className="text-lg font-bold">Navigation</h3>
+            <h3 className="text-lg font-bold">Liens rapides</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/" className="text-sm text-muted-foreground hover:text-primary transition-colors">
@@ -28,13 +39,18 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/equipes" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Équipes
+                </Link>
+              </li>
+              <li>
                 <Link to="/recherche" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                   Recherche
                 </Link>
               </li>
               <li>
                 <Link to="/admin" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Admin
+                  Administration
                 </Link>
               </li>
             </ul>
@@ -42,26 +58,26 @@ const Footer = () => {
           
           <div className="space-y-4">
             <h3 className="text-lg font-bold">Contact</h3>
-            <p className="text-sm text-muted-foreground">
-              Pour toute question, n'hésitez pas à nous contacter.
-            </p>
-            <div className="flex space-x-4">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Github className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Linkedin className="h-5 w-5" />
-              </a>
-            </div>
+            <ul className="space-y-2">
+              <li className="flex items-center space-x-2">
+                <Mail className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">contact@boostgg.com</span>
+              </li>
+              <li className="flex items-center space-x-2">
+                <Phone className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">+33 1 23 45 67 89</span>
+              </li>
+              <li className="flex items-center space-x-2">
+                <MapPin className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">123 Rue de l'Esport, 75001 Paris</span>
+              </li>
+            </ul>
           </div>
         </div>
         
         <div className="mt-12 pt-8 border-t border-border">
           <p className="text-sm text-muted-foreground text-center">
-            © {new Date().getFullYear()} EsportManager. Tous droits réservés.
+            © {new Date().getFullYear()} BOOSTGG. Tous droits réservés.
           </p>
         </div>
       </div>

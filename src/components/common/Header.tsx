@@ -27,7 +27,7 @@ const Header = () => {
     <header className="fixed w-full z-50 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-4 flex items-center justify-between h-16">
         <Link to="/" className="flex items-center space-x-2">
-          <span className="font-bold text-xl highlight-text">EsportManager</span>
+          <span className="font-bold text-xl highlight-text">BOOSTGG</span>
         </Link>
 
         {/* Navigation desktop */}
