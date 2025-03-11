@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Github, Twitter, Linkedin, Mail, MapPin } from "lucide-react";
 
@@ -25,7 +24,7 @@ const Footer = () => {
             </div>
           </div>
           
-          <div className="space-y-4">
+          <div className="space-y-4 flex flex-col items-center text-center">
             <h3 className="text-lg font-bold">Liens rapides</h3>
             <ul className="space-y-2">
               <li>
