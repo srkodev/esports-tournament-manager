@@ -22,14 +22,17 @@ if(
 ) {
     $equipe->Nom = $data->Nom;
     $equipe->Pays = $data->Pays;
-    $equipe->Jeux_principaux = $data->Jeux_principaux;
+    $equipe->Jeux_principaux = $data->Jeux_principaux ?? '';
     $equipe->Date_creation = $data->Date_creation;
-    $equipe->Logo = $data->Logo;
-    $equipe->Site_web = $data->Site_web;
+    $equipe->Logo = $data->Logo ?? '';
+    $equipe->Site_web = $data->Site_web ?? '';
 
     if($equipe->create()) {
         http_response_code(201);
-        echo json_encode(array("message" => "L'équipe a été créée."));
+        echo json_encode(array(
+            "message" => "L'équipe a été créée.",
+            "ID_equipe" => $equipe->getLastInsertedId()
+        ));
     } else {
         http_response_code(503);
         echo json_encode(array("message" => "Impossible de créer l'équipe."));

@@ -26,14 +26,17 @@ if(
     $equipe->ID_equipe = $data->ID_equipe;
     $equipe->Nom = $data->Nom;
     $equipe->Pays = $data->Pays;
-    $equipe->Jeux_principaux = $data->Jeux_principaux;
+    $equipe->Jeux_principaux = $data->Jeux_principaux ?? '';
     $equipe->Date_creation = $data->Date_creation;
-    $equipe->Logo = $data->Logo;
-    $equipe->Site_web = $data->Site_web;
+    $equipe->Logo = $data->Logo ?? '';
+    $equipe->Site_web = $data->Site_web ?? '';
 
     if($equipe->update()) {
         http_response_code(200);
-        echo json_encode(array("message" => "L'équipe a été mise à jour."));
+        echo json_encode(array(
+            "message" => "L'équipe a été mise à jour.",
+            "ID_equipe" => $data->ID_equipe
+        ));
     } else {
         http_response_code(503);
         echo json_encode(array("message" => "Impossible de mettre à jour l'équipe."));

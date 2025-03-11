@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -15,12 +15,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Equipe, createEquipe, updateEquipe } from "@/services/api";
 import { toast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, Upload, Image as ImageIcon } from "lucide-react";
+import { uploadImage } from "@/services/uploadService";
 
 interface EquipeFormProps {
   onSuccess: () => void;
   equipeToEdit?: Equipe;
-  onCancel?: () => void; // Make this optional to match how it's used in AdminPage
+  onCancel?: () => void;
 }
 
 const equipeSchema = z.object({
@@ -28,7 +29,7 @@ const equipeSchema = z.object({
   Pays: z.string().min(2, "Le pays doit contenir au moins 2 caractères"),
   Jeux_principaux: z.string(),
   Date_creation: z.string(),
-  Logo: z.string().url("URL invalide").or(z.literal("")),
+  Logo: z.string(),
   Site_web: z.string().url("URL invalide").or(z.literal(""))
 });
 
@@ -36,6 +37,9 @@ type EquipeFormValues = z.infer<typeof equipeSchema>;
 
 const EquipeForm = ({ onSuccess, equipeToEdit, onCancel }: EquipeFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [logoPreview, setLogoPreview] = useState<string | null>(equipeToEdit?.Logo || null);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const defaultValues: Partial<EquipeFormValues> = {
     Nom: equipeToEdit?.Nom || "",
@@ -51,6 +55,30 @@ const EquipeForm = ({ onSuccess, equipeToEdit, onCancel }: EquipeFormProps) => {
     defaultValues
   });
   
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setIsUploading(true);
+    
+    try {
+      const filePath = await uploadImage(file);
+      if (filePath) {
+        form.setValue("Logo", filePath);
+        setLogoPreview(filePath);
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'upload du logo:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible d'uploader le logo",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+  
   const onSubmit = async (data: EquipeFormValues) => {
     setIsLoading(true);
     
@@ -58,7 +86,6 @@ const EquipeForm = ({ onSuccess, equipeToEdit, onCancel }: EquipeFormProps) => {
       if (equipeToEdit) {
         await updateEquipe(equipeToEdit.ID_equipe, data);
       } else {
-        // Ensure all required fields are present
         await createEquipe({
           Nom: data.Nom,
           Pays: data.Pays,
@@ -73,6 +100,7 @@ const EquipeForm = ({ onSuccess, equipeToEdit, onCancel }: EquipeFormProps) => {
       
       if (!equipeToEdit) {
         form.reset(defaultValues);
+        setLogoPreview(null);
       }
     } catch (error) {
       console.error("Erreur lors de l'enregistrement :", error);
@@ -150,10 +178,61 @@ const EquipeForm = ({ onSuccess, equipeToEdit, onCancel }: EquipeFormProps) => {
           name="Logo"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>URL du logo</FormLabel>
-              <FormControl>
-                <Input placeholder="https://example.com/logo.png" {...field} />
-              </FormControl>
+              <FormLabel>Logo</FormLabel>
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    className="hidden" 
+                    ref={fileInputRef}
+                    onChange={handleLogoUpload}
+                  />
+                  
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploading}
+                  >
+                    {isUploading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Upload className="mr-2 h-4 w-4" />
+                    )}
+                    {logoPreview ? "Changer le logo" : "Uploader un logo"}
+                  </Button>
+                  
+                  <FormControl>
+                    <Input 
+                      placeholder="Ou URL du logo" 
+                      {...field} 
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setLogoPreview(e.target.value);
+                      }}
+                    />
+                  </FormControl>
+                </div>
+                
+                {logoPreview && (
+                  <div className="border rounded-md p-2 w-32 h-32 flex items-center justify-center overflow-hidden">
+                    <img 
+                      src={logoPreview} 
+                      alt="Logo preview" 
+                      className="max-w-full max-h-full object-contain"
+                      onError={() => {
+                        setLogoPreview(null);
+                        toast({
+                          title: "Erreur",
+                          description: "Impossible de charger l'image",
+                          variant: "destructive"
+                        });
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
               <FormMessage />
             </FormItem>
           )}

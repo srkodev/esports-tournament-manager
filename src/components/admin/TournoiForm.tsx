@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -16,13 +16,14 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Equipe, Tournoi, createTournoi, updateTournoi } from "@/services/api";
 import { toast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, Upload } from "lucide-react";
+import { uploadImage } from "@/services/uploadService";
 
 interface TournoiFormProps {
   onSuccess: () => void;
   tournoiToEdit?: Tournoi;
   equipes: Equipe[];
-  onCancel?: () => void; // Added to match AdminPage usage
+  onCancel?: () => void;
 }
 
 const tournoiSchema = z.object({
@@ -30,7 +31,7 @@ const tournoiSchema = z.object({
   Date_debut: z.string(),
   Date_fin: z.string(),
   Lieu: z.string().min(2, "Le lieu doit contenir au moins 2 caractères"),
-  Image_affiche: z.string().url("URL invalide").or(z.literal("")),
+  Image_affiche: z.string(),
   ID_equipe_vainqueur: z.string().or(z.literal("null"))
 }).refine(data => {
   const dateDebut = new Date(data.Date_debut);
@@ -45,6 +46,9 @@ type TournoiFormValues = z.infer<typeof tournoiSchema>;
 
 const TournoiForm = ({ onSuccess, tournoiToEdit, equipes, onCancel }: TournoiFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(tournoiToEdit?.Image_affiche || null);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const defaultValues: Partial<TournoiFormValues> = {
     Nom_tournoi: tournoiToEdit?.Nom_tournoi || "",
@@ -59,6 +63,30 @@ const TournoiForm = ({ onSuccess, tournoiToEdit, equipes, onCancel }: TournoiFor
     resolver: zodResolver(tournoiSchema),
     defaultValues
   });
+  
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setIsUploading(true);
+    
+    try {
+      const filePath = await uploadImage(file);
+      if (filePath) {
+        form.setValue("Image_affiche", filePath);
+        setImagePreview(filePath);
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'upload de l'image:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible d'uploader l'image",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
   
   const onSubmit = async (data: TournoiFormValues) => {
     setIsLoading(true);
@@ -83,6 +111,7 @@ const TournoiForm = ({ onSuccess, tournoiToEdit, equipes, onCancel }: TournoiFor
       
       if (!tournoiToEdit) {
         form.reset(defaultValues);
+        setImagePreview(null);
       }
     } catch (error) {
       console.error("Erreur lors de l'enregistrement :", error);
@@ -162,10 +191,61 @@ const TournoiForm = ({ onSuccess, tournoiToEdit, equipes, onCancel }: TournoiFor
           name="Image_affiche"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>URL de l'affiche</FormLabel>
-              <FormControl>
-                <Input placeholder="https://example.com/affiche.png" {...field} />
-              </FormControl>
+              <FormLabel>Affiche du tournoi</FormLabel>
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    className="hidden" 
+                    ref={fileInputRef}
+                    onChange={handleImageUpload}
+                  />
+                  
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploading}
+                  >
+                    {isUploading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Upload className="mr-2 h-4 w-4" />
+                    )}
+                    {imagePreview ? "Changer l'image" : "Uploader une affiche"}
+                  </Button>
+                  
+                  <FormControl>
+                    <Input 
+                      placeholder="Ou URL de l'affiche" 
+                      {...field} 
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setImagePreview(e.target.value);
+                      }}
+                    />
+                  </FormControl>
+                </div>
+                
+                {imagePreview && (
+                  <div className="border rounded-md p-2 h-40 flex items-center justify-center overflow-hidden">
+                    <img 
+                      src={imagePreview} 
+                      alt="Aperçu de l'affiche" 
+                      className="max-w-full max-h-full object-contain"
+                      onError={() => {
+                        setImagePreview(null);
+                        toast({
+                          title: "Erreur",
+                          description: "Impossible de charger l'image",
+                          variant: "destructive"
+                        });
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
               <FormMessage />
             </FormItem>
           )}

@@ -25,12 +25,15 @@ if(
     $tournoi->Date_debut = $data->Date_debut;
     $tournoi->Date_fin = $data->Date_fin;
     $tournoi->Lieu = $data->Lieu;
-    $tournoi->Image_affiche = $data->Image_affiche;
+    $tournoi->Image_affiche = $data->Image_affiche ?? '';
     $tournoi->ID_equipe_vainqueur = $data->ID_equipe_vainqueur ?? null;
 
     if($tournoi->create()) {
         http_response_code(201);
-        echo json_encode(array("message" => "Le tournoi a été créé."));
+        echo json_encode(array(
+            "message" => "Le tournoi a été créé.",
+            "ID_tournoi" => $tournoi->getLastInsertedId()
+        ));
     } else {
         http_response_code(503);
         echo json_encode(array("message" => "Impossible de créer le tournoi."));

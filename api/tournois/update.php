@@ -27,12 +27,15 @@ if(
     $tournoi->Date_debut = $data->Date_debut;
     $tournoi->Date_fin = $data->Date_fin;
     $tournoi->Lieu = $data->Lieu;
-    $tournoi->Image_affiche = $data->Image_affiche;
-    $tournoi->ID_equipe_vainqueur = $data->ID_equipe_vainqueur;
+    $tournoi->Image_affiche = $data->Image_affiche ?? '';
+    $tournoi->ID_equipe_vainqueur = $data->ID_equipe_vainqueur ?? null;
 
     if($tournoi->update()) {
         http_response_code(200);
-        echo json_encode(array("message" => "Le tournoi a été mis à jour."));
+        echo json_encode(array(
+            "message" => "Le tournoi a été mis à jour.",
+            "ID_tournoi" => $data->ID_tournoi
+        ));
     } else {
         http_response_code(503);
         echo json_encode(array("message" => "Impossible de mettre à jour le tournoi."));
