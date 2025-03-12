@@ -11,8 +11,6 @@ import AdminPage from "./pages/AdminPage";
 import TournoisPage from "./pages/TournoisPage";
 import TournoiDetailPage from "./pages/TournoiDetailPage";
 import NotFound from "./pages/NotFound";
-import LoginPage from "./pages/LoginPage";
-import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -28,15 +26,7 @@ const App = () => (
           <Route path="/tournois" element={<TournoisPage />} />
           <Route path="/tournois/:id" element={<TournoiDetailPage />} />
           <Route path="/recherche" element={<RecherchePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route 
-            path="/admin" 
-            element={
-              <ProtectedRoute>
-                <AdminPage />
-              </ProtectedRoute>
-            } 
-          />
+          <Route path="/admin" element={<AdminPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
