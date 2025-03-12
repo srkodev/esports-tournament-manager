@@ -16,11 +16,11 @@ const Header = () => {
     document.documentElement.classList.toggle('light');
   };
 
+  // Navigation items avec traitement spécial pour Admin
   const navItems = [
     { text: "Accueil", path: "/" },
     { text: "Tournois", path: "/tournois" },
-    { text: "Recherche", path: "/recherche" },
-    { text: "Admin", path: "/admin" }
+    { text: "Recherche", path: "/recherche" }
   ];
 
   return (
@@ -43,6 +43,15 @@ const Header = () => {
               {item.text}
             </Link>
           ))}
+          {/* Élément Admin avec balise <a> standard */}
+          <a
+            href="/admin"
+            className={`text-sm font-medium transition-colors hover:text-primary ${
+              location.pathname === "/admin" ? "text-primary" : "text-muted-foreground"
+            }`}
+          >
+            Admin
+          </a>
         </nav>
 
         <div className="flex items-center space-x-4">
@@ -88,6 +97,16 @@ const Header = () => {
                 {item.text}
               </Link>
             ))}
+            {/* Admin avec balise <a> dans le menu mobile */}
+            <a
+              href="/admin"
+              className={`block px-3 py-2 rounded-md text-base font-medium transition-colors hover:bg-muted ${
+                location.pathname === "/admin" ? "text-primary" : "text-muted-foreground"
+              }`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Admin
+            </a>
             <div className="flex items-center px-3 py-2">
               <Button
                 variant="ghost"

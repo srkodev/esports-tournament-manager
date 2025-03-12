@@ -142,11 +142,11 @@ const Index = () => {
             <p className="text-lg mb-8 opacity-90">
               Accédez à l'interface d'administration pour gérer vos équipes et tournois.
             </p>
-            <Link to="/admin">
+            <a href="/admin">
               <Button size="lg" variant="secondary" className="bg-white text-esport-purple hover:bg-white/90">
                 Espace Administration
               </Button>
-            </Link>
+            </a>
           </div>
         </div>
       </section>
