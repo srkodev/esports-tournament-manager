@@ -1,4 +1,3 @@
-
 <?php
 class Database {
     private $host;
@@ -8,24 +7,11 @@ class Database {
     private $conn;
 
     public function __construct() {
-        // Déterminer l'environnement
-        $env = getenv('APP_ENV') ?: 'production';
-
-        if ($env === 'development') {
-            // Configuration de développement
-            $this->host = "localhost";
-            $this->db_name = "tournoi_db";
-            $this->username = "tournoi_user";
-            $this->password = "password_secure";
-        } else {
-            // Configuration de production
-            // Vous pouvez définir ces variables d'environnement dans votre serveur
-            // ou les définir directement ici
-            $this->host = getenv('DB_HOST') ?: "localhost";
-            $this->db_name = getenv('DB_NAME') ?: "tournoi_db";
-            $this->username = getenv('DB_USER') ?: "tournoi_user";
-            $this->password = getenv('DB_PASSWORD') ?: "votre_mot_de_passe_de_production";
-        }
+        // Configuration de développement
+        $this->host = "localhost";
+        $this->db_name = "tournoi_db";
+        $this->username = "tournoi_user";
+        $this->password = "password_secure";
     }
 
     public function getConnection() {
