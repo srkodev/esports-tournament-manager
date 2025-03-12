@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Equipe } from "@/services/api";
@@ -17,12 +16,20 @@ const EquipeCard = ({ equipe }: EquipeCardProps) => {
   // Formatage de la date de création
   const dateCreation = format(new Date(equipe.Date_creation), 'PPP', { locale: fr });
   
+  // Nettoyer l'URL du logo en remplaçant l'entité HTML par une apostrophe
+  const cleanLogo = equipe.Logo.replace(/&#039;/g, "'");
+  
+  // Vérifier si l'URL du logo commence par "http"
+  const logoUrl = cleanLogo.startsWith("http")
+    ? cleanLogo
+    : `http://mmi24c01.sae203.ovh${cleanLogo}`;
+
   return (
     <Card className="overflow-hidden h-full transition-all duration-300 hover:shadow-md hover:shadow-primary/20 group">
       <CardHeader className="p-0 overflow-hidden h-48 relative">
         <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent z-10" />
         <img 
-          src={equipe.Logo} 
+          src={logoUrl} 
           alt={`Logo de ${equipe.Nom}`}
           className="w-full h-full object-contain p-8 bg-muted/20 transition-transform duration-300 group-hover:scale-105"
           onError={(e) => {
