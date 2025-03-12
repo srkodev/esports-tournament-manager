@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // Vérifier si l'en-tête d'autorisation est présent
 if (!isset($_SERVER['HTTP_AUTHORIZATION']) || empty($_SERVER['HTTP_AUTHORIZATION'])) {
-    http_response_code(401); // Unauthorized
+    http_response_code(401);
     echo json_encode(["message" => "Authentification requise"]);
     exit();
 }
@@ -31,20 +31,52 @@ if (strpos($auth_header, 'Basic') !== 0) {
 $credentials = base64_decode(substr($auth_header, 6));
 list($username, $password) = explode(':', $credentials, 2);
 
-// Ici, vous devriez normalement vérifier ces identifiants par rapport à votre fichier htpasswd
-// Pour simplifier, on va utiliser une valeur codée en dur, mais dans un environnement réel,
-// vous voudriez lire le fichier /home/mmi24c01/htpassword.mmi
+// Chemin vers le fichier htpassword
+$htpasswd_file = '/home/mmi24c01/htpassword.mmi';
 
-// Exemple de vérification simple (à remplacer par une vérification réelle du fichier htpasswd)
-$valid_username = "admin"; // Remplacer par votre nom d'utilisateur réel
-$valid_password = "admin123"; // Remplacer par votre mot de passe réel
+// Vérifier si le fichier existe
+if (!file_exists($htpasswd_file)) {
+    http_response_code(500);
+    echo json_encode(["message" => "Erreur de configuration du serveur"]);
+    exit();
+}
 
-if ($username === $valid_username && $password === $valid_password) {
-    // Authentification réussie
+// Lire le fichier htpassword
+$htpasswd_content = file_get_contents($htpasswd_file);
+$lines = explode("\n", $htpasswd_content);
+
+$authenticated = false;
+
+foreach ($lines as $line) {
+    if (empty(trim($line))) continue;
+    
+    // Format du fichier htpasswd : username:hashedpassword
+    list($stored_username, $stored_hash) = explode(':', trim($line));
+    
+    if ($username === $stored_username) {
+        // Le mot de passe dans htpasswd utilise crypt() ou MD5 ou bcrypt
+        // Vérifions d'abord si c'est un hash bcrypt (commence par $2y$)
+        if (strpos($stored_hash, '$2y$') === 0) {
+            if (password_verify($password, $stored_hash)) {
+                $authenticated = true;
+                break;
+            }
+        }
+        // Sinon, vérifions avec crypt() pour la compatibilité avec les anciens hashes
+        else {
+            $salt = substr($stored_hash, 0, 2);
+            if (crypt($password, $salt) === $stored_hash) {
+                $authenticated = true;
+                break;
+            }
+        }
+    }
+}
+
+if ($authenticated) {
     http_response_code(200);
     echo json_encode(["message" => "Authentification réussie"]);
 } else {
-    // Authentification échouée
     http_response_code(401);
     echo json_encode(["message" => "Identifiants incorrects"]);
 }
