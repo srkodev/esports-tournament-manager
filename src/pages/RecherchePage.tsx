@@ -1,12 +1,9 @@
 
 import { useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Search, Filter } from "lucide-react";
+import { Search } from "lucide-react";
 import EquipeCard from "@/components/equipes/EquipeCard";
 import TournoiCard from "@/components/tournois/TournoiCard";
 import { getEquipes, getTournois, Equipe, Tournoi } from "@/services/api";
@@ -15,9 +12,8 @@ import { useQuery } from "@tanstack/react-query";
 const RecherchePage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("equipes");
-  const [showFilters, setShowFilters] = useState(false);
 
-  // Récupération des données (statique pour l'instant)
+  // Récupération des données
   const { data: equipes, isLoading: isLoadingEquipes } = useQuery({
     queryKey: ["equipes"],
     queryFn: getEquipes,
@@ -61,68 +57,7 @@ const RecherchePage = () => {
                 className="pl-10"
               />
             </div>
-            <Button 
-              variant="outline" 
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2"
-            >
-              <Filter className="h-4 w-4" />
-              Filtres
-            </Button>
           </div>
-
-          {showFilters && (
-            <Card className="bg-muted/40">
-              <CardContent className="p-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <p className="text-sm font-medium mb-2">Filtrer par jeu</p>
-                    <div className="flex flex-wrap gap-2">
-                      <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
-                        CS:GO
-                      </Badge>
-                      <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
-                        LoL
-                      </Badge>
-                      <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
-                        Dota 2
-                      </Badge>
-                      <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
-                        Valorant
-                      </Badge>
-                    </div>
-                  </div>
-
-                  <div>
-                    <p className="text-sm font-medium mb-2">Filtrer par pays</p>
-                    <div className="flex flex-wrap gap-2">
-                      <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
-                        France
-                      </Badge>
-                      <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
-                        États-Unis
-                      </Badge>
-                      <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
-                        Corée du Sud
-                      </Badge>
-                    </div>
-                  </div>
-
-                  <div>
-                    <p className="text-sm font-medium mb-2">Filtrer par date</p>
-                    <div className="flex flex-wrap gap-2">
-                      <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
-                        2023
-                      </Badge>
-                      <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
-                        2024
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
 
           <Tabs 
             defaultValue="equipes" 

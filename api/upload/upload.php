@@ -1,4 +1,3 @@
-
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
@@ -33,9 +32,16 @@ if (isset($_FILES["image"])) {
         exit;
     }
     
-    // Générer un nom de fichier unique
+    // Nettoyer le nom de fichier pour supprimer les caractères problématiques
+    $originalName = basename($file["name"]);
+    $fileInfo = pathinfo($originalName);
+    // On supprime tout caractère qui n'est pas une lettre, un chiffre, un tiret ou un underscore dans le nom de fichier
+    $fileBaseName = preg_replace('/[^a-zA-Z0-9_\-]/', '', $fileInfo['filename']);
+    $fileExtension = strtolower($fileInfo['extension']);
+    
+    // Générer un nom de fichier unique avec le timestamp
     $timestamp = time();
-    $filename = $timestamp . "_" . basename($file["name"]);
+    $filename = $timestamp . "_" . $fileBaseName . "." . $fileExtension;
     $target_file = $target_dir . $filename;
     
     // Tenter de déplacer le fichier uploadé

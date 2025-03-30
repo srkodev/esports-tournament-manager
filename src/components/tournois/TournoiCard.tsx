@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tournoi } from "@/services/api";
@@ -17,7 +16,7 @@ const TournoiCard = ({ tournoi }: TournoiCardProps) => {
   const dateDebut = format(new Date(tournoi.Date_debut), 'PPP', { locale: fr });
   const dateFin = format(new Date(tournoi.Date_fin), 'PPP', { locale: fr });
   
-  // Déterminer si le tournoi est à venir, en cours ou terminé
+  // Déterminer le statut du tournoi
   const maintenant = new Date();
   const debut = new Date(tournoi.Date_debut);
   const fin = new Date(tournoi.Date_fin);
@@ -36,12 +35,19 @@ const TournoiCard = ({ tournoi }: TournoiCardProps) => {
     statusColor = "green";
   }
   
+  // Nettoyer l'URL de l'image en remplaçant l'entité HTML par une apostrophe
+  const cleanImage = tournoi.Image_affiche.replace(/&#039;/g, "'");
+  // S'assurer que l'URL est complète (si elle ne commence pas par http, on ajoute le domaine)
+  const imageUrl = cleanImage.startsWith("http")
+    ? cleanImage
+    : `http://mmi24c01.sae203.ovh${cleanImage}`;
+
   return (
     <Card className="overflow-hidden h-full transition-all duration-300 hover:shadow-md hover:shadow-primary/20 group">
       <CardHeader className="p-0 overflow-hidden h-48 relative">
         <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent z-10" />
         <img 
-          src={tournoi.Image_affiche} 
+          src={imageUrl} 
           alt={`Affiche de ${tournoi.Nom_tournoi}`}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           onError={(e) => {
@@ -71,7 +77,9 @@ const TournoiCard = ({ tournoi }: TournoiCardProps) => {
         {tournoi.ID_equipe_vainqueur && tournoi.Vainqueur && (
           <div className="flex items-center text-sm text-muted-foreground">
             <Trophy className="mr-2 h-4 w-4 text-yellow-500" />
-            <span>Vainqueur: <span className="font-medium">{tournoi.Vainqueur.Nom}</span></span>
+            <span>
+              Vainqueur: <span className="font-medium">{tournoi.Vainqueur.Nom}</span>
+            </span>
           </div>
         )}
       </CardContent>

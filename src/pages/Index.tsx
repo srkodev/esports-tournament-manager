@@ -5,7 +5,7 @@ import { Equipe, getEquipes } from "@/services/api";
 import EquipeCard from "@/components/equipes/EquipeCard";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Loader2, TrophyIcon, UsersIcon, Calendar, Search } from "lucide-react";
+import { Loader2, TrophyIcon, UsersIcon, BarChart, Search } from "lucide-react";
 
 const Index = () => {
   const [equipes, setEquipes] = useState<Equipe[]>([]);
@@ -93,11 +93,11 @@ const Index = () => {
             
             <div className="bg-card rounded-lg p-6 shadow-lg border border-border transition-transform hover:translate-y-[-5px]">
               <div className="w-12 h-12 bg-esport-purple/20 rounded-full flex items-center justify-center mb-4">
-                <Calendar className="h-6 w-6 text-esport-purple" />
+                <BarChart className="h-6 w-6 text-esport-purple" />
               </div>
-              <h3 className="text-xl font-bold mb-2">Calendrier</h3>
+              <h3 className="text-xl font-bold mb-2">Statistiques</h3>
               <p className="text-muted-foreground">
-                Ne manquez aucun événement grâce au calendrier complet des compétitions à venir.
+                Analysez les performances des équipes et les tendances des compétitions en temps réel.
               </p>
             </div>
           </div>
@@ -142,11 +142,11 @@ const Index = () => {
             <p className="text-lg mb-8 opacity-90">
               Accédez à l'interface d'administration pour gérer vos équipes et tournois.
             </p>
-            <Link to="/admin">
+            <a href="/admin">
               <Button size="lg" variant="secondary" className="bg-white text-esport-purple hover:bg-white/90">
                 Espace Administration
               </Button>
-            </Link>
+            </a>
           </div>
         </div>
       </section>
